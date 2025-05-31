@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/authStore";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import MainLayout from "@/components/Layout/MainLayout";
+import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
 import SignUp from "@/pages/SignUp";
 import Dashboard from "@/pages/Dashboard";
