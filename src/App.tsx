@@ -33,6 +33,13 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Public routes */}
+            <Route 
+              path="/" 
+              element={
+                isAuthenticated ? <Navigate to="/dashboard" replace /> : <Landing />
+              } 
+            />
             <Route 
               path="/login" 
               element={
@@ -45,16 +52,27 @@ const App = () => {
                 isAuthenticated ? <Navigate to="/dashboard" replace /> : <SignUp />
               } 
             />
+            
+            {/* Protected routes */}
             <Route
-              path="/"
+              path="/dashboard"
               element={
                 <ProtectedRoute>
                   <MainLayout />
                 </ProtectedRoute>
               }
             >
-              <Route index element={<Navigate to="/dashboard" replace />} />
-              <Route path="dashboard" element={<Dashboard />} />
+              <Route index element={<Dashboard />} />
+            </Route>
+            
+            <Route
+              path="/*"
+              element={
+                <ProtectedRoute>
+                  <MainLayout />
+                </ProtectedRoute>
+              }
+            >
               {/* Employee Routes */}
               <Route path="tickets" element={<div>My Tickets (Coming Soon)</div>} />
               <Route path="tickets/new" element={<div>Create Ticket (Coming Soon)</div>} />
@@ -100,6 +118,7 @@ const App = () => {
                 </ProtectedRoute>
               } />
             </Route>
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
