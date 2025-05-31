@@ -24,6 +24,7 @@ interface AuthState {
   signUp: (email: string, password: string, name: string, role: 'employee' | 'agent' | 'admin') => Promise<void>;
   logout: () => Promise<void>;
   initialize: () => Promise<void>;
+  fetchProfile: (userId: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -35,6 +36,25 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       loading: true,
       
+      fetchProfile: async (userId: string) => {
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', userId)
+            .single();
+
+          if (error) {
+            console.error('Error fetching profile:', error);
+            return;
+          }
+
+          set({ profile: data });
+        } catch (error) {
+          console.error('Error fetching profile:', error);
+        }
+      },
+
       initialize: async () => {
         try {
           // Set up auth state listener
@@ -42,25 +62,17 @@ export const useAuthStore = create<AuthState>()(
             console.log('Auth state changed:', event, session?.user?.id);
             
             if (session?.user) {
-              // For now, we'll create a basic profile from user metadata
-              // Once we create the profiles table, we can fetch from there
-              const profile: UserProfile | null = session.user.user_metadata ? {
-                id: session.user.id,
-                name: session.user.user_metadata.name || session.user.email?.split('@')[0] || 'User',
-                role: session.user.user_metadata.role || 'employee',
-                department: session.user.user_metadata.department || 'General',
-                avatar: session.user.user_metadata.avatar_url,
-                created_at: session.user.created_at,
-                updated_at: session.user.updated_at || session.user.created_at
-              } : null;
-              
               set({
                 user: session.user,
                 session,
-                profile,
                 isAuthenticated: true,
                 loading: false
               });
+
+              // Fetch the user's profile from the database
+              setTimeout(() => {
+                get().fetchProfile(session.user.id);
+              }, 0);
             } else {
               set({
                 user: null,
@@ -75,23 +87,14 @@ export const useAuthStore = create<AuthState>()(
           // Check for existing session
           const { data: { session } } = await supabase.auth.getSession();
           if (session?.user) {
-            const profile: UserProfile | null = session.user.user_metadata ? {
-              id: session.user.id,
-              name: session.user.user_metadata.name || session.user.email?.split('@')[0] || 'User',
-              role: session.user.user_metadata.role || 'employee',
-              department: session.user.user_metadata.department || 'General',
-              avatar: session.user.user_metadata.avatar_url,
-              created_at: session.user.created_at,
-              updated_at: session.user.updated_at || session.user.created_at
-            } : null;
-            
             set({
               user: session.user,
               session,
-              profile,
               isAuthenticated: true,
               loading: false
             });
+            
+            await get().fetchProfile(session.user.id);
           } else {
             set({ loading: false });
           }
@@ -132,7 +135,7 @@ export const useAuthStore = create<AuthState>()(
           throw error;
         }
 
-        // Profile will be created from user metadata and loaded by auth state change listener
+        // Profile will be created by the database trigger and loaded by auth state change listener
       },
 
       logout: async () => {

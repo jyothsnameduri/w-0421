@@ -18,11 +18,11 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
-  const { user, logout } = useAuthStore();
+  const { user, profile, logout } = useAuthStore();
 
-  // Get user display name and avatar from user metadata
-  const userName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'User';
-  const userAvatar = user?.user_metadata?.avatar_url;
+  // Get user display name and avatar from profile or fallback to user data
+  const userName = profile?.name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'User';
+  const userAvatar = profile?.avatar || user?.user_metadata?.avatar_url;
 
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
@@ -73,6 +73,11 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                   <p className="text-xs leading-none text-muted-foreground">
                     {user?.email}
                   </p>
+                  {profile?.role && (
+                    <p className="text-xs leading-none text-muted-foreground capitalize">
+                      {profile.role} • {profile.department}
+                    </p>
+                  )}
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
