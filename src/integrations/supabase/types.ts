@@ -9,113 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      comments: {
-        Row: {
-          content: string
-          created_at: string
-          id: string
-          is_internal: boolean
-          ticket_id: string
-          user_id: string
-        }
-        Insert: {
-          content: string
-          created_at?: string
-          id?: string
-          is_internal?: boolean
-          ticket_id: string
-          user_id: string
-        }
-        Update: {
-          content?: string
-          created_at?: string
-          id?: string
-          is_internal?: boolean
-          ticket_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "comments_ticket_id_fkey"
-            columns: ["ticket_id"]
-            isOneToOne: false
-            referencedRelation: "tickets"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      profiles: {
-        Row: {
-          avatar: string | null
-          created_at: string
-          department: string
-          id: string
-          name: string
-          role: Database["public"]["Enums"]["user_role"]
-          updated_at: string
-        }
-        Insert: {
-          avatar?: string | null
-          created_at?: string
-          department?: string
-          id: string
-          name: string
-          role?: Database["public"]["Enums"]["user_role"]
-          updated_at?: string
-        }
-        Update: {
-          avatar?: string | null
-          created_at?: string
-          department?: string
-          id?: string
-          name?: string
-          role?: Database["public"]["Enums"]["user_role"]
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      tickets: {
-        Row: {
-          assigned_to: string | null
-          category: string
-          created_at: string
-          created_by: string
-          department: string
-          description: string
-          id: string
-          priority: Database["public"]["Enums"]["ticket_priority"]
-          status: Database["public"]["Enums"]["ticket_status"]
-          subject: string
-          updated_at: string
-        }
-        Insert: {
-          assigned_to?: string | null
-          category: string
-          created_at?: string
-          created_by: string
-          department: string
-          description: string
-          id?: string
-          priority?: Database["public"]["Enums"]["ticket_priority"]
-          status?: Database["public"]["Enums"]["ticket_status"]
-          subject: string
-          updated_at?: string
-        }
-        Update: {
-          assigned_to?: string | null
-          category?: string
-          created_at?: string
-          created_by?: string
-          department?: string
-          description?: string
-          id?: string
-          priority?: Database["public"]["Enums"]["ticket_priority"]
-          status?: Database["public"]["Enums"]["ticket_status"]
-          subject?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
@@ -124,9 +18,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      ticket_priority: "low" | "medium" | "high" | "critical"
-      ticket_status: "open" | "in_progress" | "pending" | "resolved" | "closed"
-      user_role: "employee" | "agent" | "admin"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -241,10 +133,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      ticket_priority: ["low", "medium", "high", "critical"],
-      ticket_status: ["open", "in_progress", "pending", "resolved", "closed"],
-      user_role: ["employee", "agent", "admin"],
-    },
+    Enums: {},
   },
 } as const
