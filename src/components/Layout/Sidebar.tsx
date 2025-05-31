@@ -21,7 +21,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose }) => {
-  const { user } = useAuthStore();
+  const { profile } = useAuthStore();
   const location = useLocation();
 
   const employeeItems = [
@@ -46,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose }) => {
   ];
 
   const getMenuItems = () => {
-    switch (user?.role) {
+    switch (profile?.role) {
       case 'admin':
         return adminItems;
       case 'agent':

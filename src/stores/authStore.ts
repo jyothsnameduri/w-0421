@@ -42,12 +42,17 @@ export const useAuthStore = create<AuthState>()(
             console.log('Auth state changed:', event, session?.user?.id);
             
             if (session?.user) {
-              // Fetch user profile
-              const { data: profile } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', session.user.id)
-                .single();
+              // For now, we'll create a basic profile from user metadata
+              // Once we create the profiles table, we can fetch from there
+              const profile: UserProfile | null = session.user.user_metadata ? {
+                id: session.user.id,
+                name: session.user.user_metadata.name || session.user.email?.split('@')[0] || 'User',
+                role: session.user.user_metadata.role || 'employee',
+                department: session.user.user_metadata.department || 'General',
+                avatar: session.user.user_metadata.avatar_url,
+                created_at: session.user.created_at,
+                updated_at: session.user.updated_at || session.user.created_at
+              } : null;
               
               set({
                 user: session.user,
@@ -70,11 +75,15 @@ export const useAuthStore = create<AuthState>()(
           // Check for existing session
           const { data: { session } } = await supabase.auth.getSession();
           if (session?.user) {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', session.user.id)
-              .single();
+            const profile: UserProfile | null = session.user.user_metadata ? {
+              id: session.user.id,
+              name: session.user.user_metadata.name || session.user.email?.split('@')[0] || 'User',
+              role: session.user.user_metadata.role || 'employee',
+              department: session.user.user_metadata.department || 'General',
+              avatar: session.user.user_metadata.avatar_url,
+              created_at: session.user.created_at,
+              updated_at: session.user.updated_at || session.user.created_at
+            } : null;
             
             set({
               user: session.user,
@@ -123,7 +132,7 @@ export const useAuthStore = create<AuthState>()(
           throw error;
         }
 
-        // Profile will be created by the database trigger and loaded by auth state change listener
+        // Profile will be created from user metadata and loaded by auth state change listener
       },
 
       logout: async () => {

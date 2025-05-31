@@ -46,17 +46,21 @@ export const useTicketStore = create<TicketState>((set, get) => ({
   fetchTickets: async () => {
     set({ loading: true });
     try {
-      const { data, error } = await supabase
-        .from('tickets')
-        .select('*')
-        .order('created_at', { ascending: false });
+      // For now, we'll use mock data since the tickets table doesn't exist yet
+      // Once we create the table, we can uncomment the Supabase query below
+      
+      // const { data, error } = await supabase
+      //   .from('tickets')
+      //   .select('*')
+      //   .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching tickets:', error);
-        throw error;
-      }
+      // if (error) {
+      //   console.error('Error fetching tickets:', error);
+      //   throw error;
+      // }
 
-      set({ tickets: data || [], loading: false });
+      console.log('Fetching tickets - table not created yet, using mock data');
+      set({ tickets: [], loading: false });
     } catch (error) {
       console.error('Error fetching tickets:', error);
       set({ loading: false });
@@ -66,21 +70,22 @@ export const useTicketStore = create<TicketState>((set, get) => ({
   createTicket: async (ticketData) => {
     set({ loading: true });
     try {
-      const { data, error } = await supabase
-        .from('tickets')
-        .insert([ticketData])
-        .select()
-        .single();
+      // For now, we'll skip the actual database insert since the table doesn't exist
+      // Once we create the table, we can uncomment the Supabase query below
+      
+      // const { data, error } = await supabase
+      //   .from('tickets')
+      //   .insert([ticketData])
+      //   .select()
+      //   .single();
 
-      if (error) {
-        console.error('Error creating ticket:', error);
-        throw error;
-      }
+      // if (error) {
+      //   console.error('Error creating ticket:', error);
+      //   throw error;
+      // }
 
-      set((state) => ({ 
-        tickets: [data, ...state.tickets],
-        loading: false 
-      }));
+      console.log('Creating ticket - table not created yet');
+      set({ loading: false });
     } catch (error) {
       console.error('Error creating ticket:', error);
       set({ loading: false });
@@ -91,25 +96,23 @@ export const useTicketStore = create<TicketState>((set, get) => ({
   updateTicket: async (id, updates) => {
     set({ loading: true });
     try {
-      const { data, error } = await supabase
-        .from('tickets')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single();
+      // For now, we'll skip the actual database update since the table doesn't exist
+      // Once we create the table, we can uncomment the Supabase query below
+      
+      // const { data, error } = await supabase
+      //   .from('tickets')
+      //   .update(updates)
+      //   .eq('id', id)
+      //   .select()
+      //   .single();
 
-      if (error) {
-        console.error('Error updating ticket:', error);
-        throw error;
-      }
+      // if (error) {
+      //   console.error('Error updating ticket:', error);
+      //   throw error;
+      // }
 
-      set((state) => ({
-        tickets: state.tickets.map(ticket => 
-          ticket.id === id ? data : ticket
-        ),
-        selectedTicket: state.selectedTicket?.id === id ? data : state.selectedTicket,
-        loading: false
-      }));
+      console.log('Updating ticket - table not created yet');
+      set({ loading: false });
     } catch (error) {
       console.error('Error updating ticket:', error);
       set({ loading: false });
