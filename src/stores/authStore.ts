@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { supabase } from '@/integrations/supabase/client';
@@ -49,7 +48,13 @@ export const useAuthStore = create<AuthState>()(
             return;
           }
 
-          set({ profile: data });
+          // Type assertion to ensure proper typing
+          const profile: UserProfile = {
+            ...data,
+            role: data.role as 'employee' | 'agent' | 'admin'
+          };
+
+          set({ profile });
         } catch (error) {
           console.error('Error fetching profile:', error);
         }

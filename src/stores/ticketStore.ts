@@ -57,7 +57,15 @@ export const useTicketStore = create<TicketState>((set, get) => ({
       }
 
       console.log('Fetched tickets:', data);
-      set({ tickets: data || [], loading: false });
+      
+      // Type assertion to ensure proper typing
+      const tickets: Ticket[] = (data || []).map(ticket => ({
+        ...ticket,
+        status: ticket.status as 'open' | 'in_progress' | 'pending' | 'resolved' | 'closed',
+        priority: ticket.priority as 'low' | 'medium' | 'high' | 'critical'
+      }));
+
+      set({ tickets, loading: false });
     } catch (error) {
       console.error('Error fetching tickets:', error);
       set({ loading: false });
